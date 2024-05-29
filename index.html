@@ -9,13 +9,14 @@
 #main{margin:60px 120px;}
 #func{margin:40vh 15vw;width:70vw;height:60vh;position:absolute;outline:2px solid black;border-radius:2vw 2vw 0 0;padding:4vh;
 box-sizing:border-box;display:flex;flex-direction:column;align-items:center;}
-#num{font-size:80px;font-family:sans-serif,math,monospace;margin:0 5vw;width:90vw;position:absolute;text-align:center;}
-input[type='number']{font-size:40px;width:140px;
-background:none;border:0;border-bottom:2px solid black;padding:0;margin:4px;height:32px;
+#num{font-size:clamp(60px,15vw,100px);font-family:sans-serif,math,monospace;margin:6vh 5vw;width:90vw;position:absolute;text-align:center;}
+input[type='number']{font-size:clamp(30px,10vw,50px);width:2ch;height:clamp(24px,8vw,40px);
+background:none;border:0;border-bottom:2px solid black;padding:0;margin:4px;min-width:1ch !important;
 &:focus{outline:0;};&::-webkit-inner-spin-button,&::-webkit-outer-spin-button{appearance:none;}}
 #func div{margin:0 0 4px;}
-input[type='range']{margin:0 0 15px;}
-label{font-size:40px;}
+input[type='range']{margin:0 0 25px;width:clamp(60px,20vw,150px);}
+label,button{font-size:clamp(30px,10vw,50px)}
+button{width:clamp(100px,10ch,400px);font-size:clamp(20px,6vw,60px);height:clamp(33px,10vw,133px);margin:0 0 15px;}
 </style>
 </head>
 <body>
@@ -23,32 +24,44 @@ label{font-size:40px;}
 <div id="func">
     <div>
     <label>Min:</label>
-    <input type="number" id="min" value="1" oninput="checkformax(100)">
+    <input type="number" id="min" value="1" oninput="checkformax(this,1,100)" style="width:1ch;">
     </div>
-    <input type="range" id="minr">
+    <input type="range" id="minr" min="1" max="100" oninput="range(this,'min')" value="1">
     <div>
     <label>Max:</label>
-    <input type="number" id="max" value="10" oninput="checkformax(100)">
+    <input type="number" id="max" value="10" oninput="checkformax(this,1,100)">
     </div>
-    <input type="range" id="maxr">
+    <input type="range" id="maxr" min="1" max="100" oninput="range(this,'max')" value="10">
     <button onclick="generate()">Generate</button>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;">
+    <input type="checkbox" id="cb"><label for="cb" style="font-size:clamp(8px,3vw,15px);word-spacing:-1q;">don't do the same number twice in a row</label>
+    </div>
 </div>
-<script>
+<script>let pastnum = -1;
 function generate(){
     let min = document.getElementById('min').value;
     let max = document.getElementById('max').value;
+    if (min > max) { var x = min;min = max;max = x;console.log(`values swapped. min: ${min} max: ${max}`) }
+    if (min == max) {document.getElementById('num').innerHTML = min;console.log('returned') ;return}
     let randnum = random(min*1,max*1);   //Math.floor(Math.random() * (max - min) + min);
+    if (document.getElementById('cb').checked == true) {
+        while (pastnum == randnum) { randnum = random(min*1,max*1);}
+    }
+    pastnum = randnum;
     document.getElementById('num').innerHTML = randnum;
-    console.log(randnum);
 }
 function random(min,max){
-let randnum = (Math.random()*(max-min)+min)
-console.log(randnum)
+let randnum = (Math.random()*(max-min)+min);
 return randnum.toFixed(0);
 }
-window.onload = function a(){let list1=[];
-    for (let i=0;i<100;i++){ list1.push(random(1,10)*1); }
-    console.log(list1)
+function checkformax(thiss,min,max){var val = thiss.value;
+    if (val > 100) { thiss.value = 100; val ='100';};
+    if (val < 0) { thiss.value = 0; val ='0';};
+    thiss.style.width = `${val.length}ch`;
+}
+function range(e,id) {var val = e.value;
+    document.getElementById(id).value = val;
+    checkformax(document.getElementById(id));
 }
 </script>
 </body>
