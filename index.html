@@ -5,11 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Random number generator</title>
 <style>
-*{background-color:rgb(227, 227, 227);}html,body{margin:0;}
+*{background-color:rgb(227, 227, 227);}html,body{margin:0;top:0;}p,h1{margin:0;}
 #main{margin:60px 120px;}
-#func{margin:40vh 15vw;width:70vw;height:60vh;position:absolute;outline:2px solid black;border-radius:2vw 2vw 0 0;padding:4vh;
-box-sizing:border-box;display:flex;flex-direction:column;align-items:center;}
-#num{font-size:clamp(60px,15vw,100px);font-family:sans-serif,math,monospace;margin:6vh 5vw;width:90vw;position:absolute;text-align:center;}
+#func{margin:0 15vw;top:40vh;width:70vw;min-height:60vh;position:absolute;outline:2px solid black;border-radius:2vw 2vw 0 0;
+padding:4vh;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;}
+#num,h1{transition:.12s linear;font-size:clamp(60px,15vw,100px);font-family:sans-serif,math,monospace;font-weight:unset;
+height:1em}
+#num{width:90vw;margin:5vh auto;text-align:center;}
+h1{top:-1.15em;height:0.5em;position:relative;background:transparent;}
+#h2{top:0;}
 input[type='number']{font-size:clamp(30px,10vw,50px);width:2ch;height:clamp(24px,8vw,40px);
 background:none;border:0;border-bottom:2px solid black;padding:0;margin:4px;min-width:1ch !important;
 &:focus{outline:0;};&::-webkit-inner-spin-button,&::-webkit-outer-spin-button{appearance:none;}}
@@ -20,7 +24,8 @@ button{width:clamp(100px,10ch,400px);font-size:clamp(20px,6vw,60px);height:clamp
 </style>
 </head>
 <body>
-    <p id="num">0</p>
+    <div id="num">0
+    </div>
 <div id="func">
     <div>
     <label>Min:</label>
@@ -33,22 +38,26 @@ button{width:clamp(100px,10ch,400px);font-size:clamp(20px,6vw,60px);height:clamp
     </div>
     <input type="range" id="maxr" min="1" max="100" oninput="range(this,'max')" value="10">
     <button onclick="generate()">Generate</button>
-    <div style="display:flex;flex-wrap:wrap;align-items:center;">
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;">
     <input type="checkbox" id="cb"><label for="cb" style="font-size:clamp(8px,3vw,15px);word-spacing:-1q;">don't do the same number twice in a row</label>
     </div>
 </div>
 <script>let pastnum = -1;
-function generate(){
+function generate(){var p=document.getElementById('num');var h1=document.getElementById('h1');var h2=document.getElementById('h2');
     let min = document.getElementById('min').value;
     let max = document.getElementById('max').value;
     if (min > max) { var x = min;min = max;max = x;console.log(`values swapped. min: ${min} max: ${max}`) }
-    if (min == max) {document.getElementById('num').innerHTML = min;console.log('returned') ;return}
+    //if (min == max) {p.innerHTML = min;return}
     let randnum = random(min*1,max*1);   //Math.floor(Math.random() * (max - min) + min);
     if (document.getElementById('cb').checked == true) {
         while (pastnum == randnum) { randnum = random(min*1,max*1);}
     }
     pastnum = randnum;
-    document.getElementById('num').innerHTML = randnum;
+    p.style.transform = 'rotateX(90deg)';
+setTimeout(() => {
+    p.innerHTML = randnum;
+    p.style.transform = 'rotateX(0deg)';
+}, 120 )
 }
 function random(min,max){
 let randnum = (Math.random()*(max-min)+min);
