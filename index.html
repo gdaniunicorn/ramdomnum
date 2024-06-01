@@ -47,10 +47,14 @@ function generate(){var p=document.getElementById('num');var h1=document.getElem
     let min = document.getElementById('min').value;
     let max = document.getElementById('max').value;
     if (min > max) { var x = min;min = max;max = x;console.log(`values swapped. min: ${min} max: ${max}`) }
-    //if (min == max) {p.innerHTML = min;return}
-    let randnum = random(min*1,max*1);   //Math.floor(Math.random() * (max - min) + min);
-    if (document.getElementById('cb').checked == true) {
-        while (pastnum == randnum) { randnum = random(min*1,max*1);}
+    let randnum = 0;
+    if (min == max) {
+        randnum = min;
+    } else {
+    randnum = random(min*1,max*1);   //Math.floor(Math.random() * (max - min) + min);
+        if (document.getElementById('cb').checked == true) {
+            while (pastnum == randnum) { randnum = random(min*1,max*1);}
+        }
     }
     pastnum = randnum;
     p.style.transform = 'rotateX(90deg)';
